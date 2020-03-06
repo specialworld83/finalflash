@@ -77,7 +77,7 @@ then
         sleep 3s
         
     else
-        echo "${YELLOW}Please Download macOS with gibmacos...${NOCOLOR}"
+        echo -e "${YELLOW}Please Download macOS with gibmacos!${NOCOLOR}"
         exit 1
     fi
     
