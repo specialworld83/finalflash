@@ -7,14 +7,14 @@
 # from /gibMacOS-master/ directory.
 # dependency gibmacos https://github.com/corpnewt/gibMacOS
 
-RED="\033[1;31m"
-NOCOLOR="\033[0m"
-YELLOW="\033[01;33m"
+RED="\033[1;31m\e[3m"
+NOCOLOR="\e[0m\033[0m"
+YELLOW="\033[01;33m\e[3m"
 set -e
 
 # Checking for root Identifying distro pkg-manager and installing dependencies.
 if [[ $EUID -ne 0 ]]; then
-    echo -e "${RED}THIS SCRIPT MUST RUN AS ROOT${NOCOLOR}"
+    echo -e "${RED}This script must be executed as root!${NOCOLOR}"
     exit 1
 fi
 
@@ -52,7 +52,7 @@ if [ "${package_manager}" = "pacman -S --noconfirm" ]; then
     ${package_manager} ${package}
     
 else
-    echo -e "${RED}YOUR DISTRO IS NOT SUPPORTED!!${NOCOLOR}"
+    echo -e "${RED}Your distro is not supported!${NOCOLOR}"
     exit 1
 fi
 
@@ -60,7 +60,7 @@ fi
 # multiple versions.
 cd "$(dirname "$(find ./ -name "publicrelease")")"
 cd publicrelease
-echo -e "${YELLOW}\e[3mPlease select macos version!\n\e[0m${NOCOLOR}"
+echo -e "${YELLOW}Please select the downloaded macOS image!${NOCOLOR}"
 if select d in */; do test -n "$d" && break; echo -e "${RED}>>> Invalid Selection !${NOCOLOR}"; done
 then
     
@@ -77,7 +77,7 @@ then
         sleep 3s
         
     else
-        echo "Please Download macOS with gibmacos..."
+        echo "${YELLOW}Please Download macOS with gibmacos...${NOCOLOR}"
         exit 1
     fi
     
@@ -89,8 +89,8 @@ fi
 readarray -t lines < <(lsblk --nodeps -no name,size | grep "sd")
 
 # Prompt the user to select the drive.
-echo -e "${RED}WARNING!!! SELECTING THE WRONG DISK MAY WIPE YOUR PC AND ALL DATA!!!${NOCOLOR}"
-echo -e "${YELLOW}\e[3mPLEASE SELECT THE USB-DRIVE!\e[0m${NOCOLOR}"
+echo -e "${RED}WARNING: THE SELECTED DRIVE WILL BE FORMATED !!!${NOCOLOR}"
+echo -e "${YELLOW}Please select the usb-drive!${NOCOLOR}"
 select choice in "${lines[@]}"; do
     [[ -n $choice ]] || { echo -e "${RED}>>> Invalid Selection !${NOCOLOR}" >&2; continue; }
     break # valid choice was made; exit prompt.
