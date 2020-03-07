@@ -67,13 +67,22 @@ then
     # checking if we have recovery.pkg  to proceed.
     
     cd "$d"
-    FILE="RecoveryHDMetaDmg.pkg"
+    FILE=(RecoveryHDMetaDmg.pkg)
+    FILE1=(*.RecoveryHDUpdate.pkg)
     if [ -f "$FILE" ]; then
         echo "Using $FILE"
         7z e -txar $FILE *.dmg
         7z e *.dmg */Base*.dmg
         7z e -tdmg Base*.dmg *.hfs
-        mv *.hfs base.iso
+        mv *.hfs base.hfs
+        sleep 3s
+        
+        elif [ -f "$FILE1" ]; then
+        mv $FILE1 $FILE
+        7z e -txar $FILE *.dmg
+        7z e *.dmg */Base*.dmg
+        7z e -tdmg Base*.dmg *.hfs
+        mv *.hfs base.hfs
         sleep 3s
         
     else
@@ -112,7 +121,7 @@ sleep 3s
     partprobe $(echo /dev/$id?*)
     sleep 3s
 
-dd bs=8M if="$PWD/base.iso" of=$(echo /dev/$id)2 status=progress oflag=sync
+dd bs=8M if="$PWD/base.hfs" of=$(echo /dev/$id)2 status=progress oflag=sync
 mv $FILE /tmp/
 rm -rf *.*
 mv /tmp/$FILE .
