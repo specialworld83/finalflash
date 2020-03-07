@@ -108,9 +108,8 @@ done
 # Split the chosen line into ID and serial number.
 read -r id sn unused <<<"$choice"
 
-echo -e "\e[3mCopying image to usb-drive!\e[0m"
-
 # Here we partition the drive and dd the raw image to it.
+partformat(){
 if
   umount $(echo /dev/$id?*) > /dev/null 2>&1 || :
 sleep 3s
@@ -120,7 +119,7 @@ sleep 3s
     sgdisk -e /dev/$id --new=0:0:+7000MiB -t 0:af00
     partprobe $(echo /dev/$id?*)
     sleep 3s
-
+echo -e "\e[3mCopying image to usb-drive!\e[0m"
 dd bs=8M if="$PWD/base.hfs" of=$(echo /dev/$id)2 status=progress oflag=sync
 mv $FILE /tmp/
 rm -rf *.*
@@ -128,11 +127,21 @@ mv /tmp/$FILE .
 
 
 then
-  umount $(echo /dev/$id?*) > /dev/null 2>&1 || :
+umount $(echo /dev/$id?*) > /dev/null 2>&1 || :
 sleep 3s
 else
   exit 1
 fi
+}
+
+while true; do
+    read -p "$(echo -e ${YELLOW}"The selected drive will be erased,do you wish to continue?"${NOCOLOR})" yn
+    case $yn in
+        [Yy]* ) partformat; break;;
+        [Nn]* ) rm -rf *.hfs; exit;;
+        * ) echo -e "${YELLOW}Please answer yes or no."${NOCOLOR};;
+    esac
+done
 
 # Format the EFI partition for opencore
 # and mount it in the /mnt.
