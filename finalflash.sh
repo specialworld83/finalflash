@@ -135,7 +135,7 @@ fi
 }
 
 while true; do
-    read -p "$(echo -e ${YELLOW}"The selected drive will be erased,do you wish to continue?"${NOCOLOR})" yn
+    read -p "$(echo -e ${YELLOW}"Driver ($id) will be erased, do you wish to continue (y/n)? "${NOCOLOR})" yn
     case $yn in
         [Yy]* ) partformat; break;;
         [Nn]* ) rm -rf *.hfs; exit;;
